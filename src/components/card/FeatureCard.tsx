@@ -1,39 +1,40 @@
-import React from "react";
-import { useStyles } from "../../styles/FeatureCardStyles";
-import Card from "@material-ui/core/Card";
-import CardActionArea from "@material-ui/core/CardActionArea";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
-import Typography from "@material-ui/core/Typography";
-import Spotify from "../../assets/spotify_large_logo.png";
+import { ElementType } from "react";
+import { useNavigate } from "react-router-dom";
+import Card from "@mui/material/Card";
+import CardActionArea from "@mui/material/CardActionArea";
+import CardContent from "@mui/material/CardContent";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 
 interface FeatureCardProps {
   text: string;
   title: string;
-  // someImage: any;
+  route: string;
+  icon: ElementType;
 }
 
-const FeatureCard: React.FC<FeatureCardProps> = ({
-  text,
-  title,
-  // someImage,
-}) => {
-  const classes = useStyles();
+const FeatureCard = ({ text, title, route, icon: Icon }: FeatureCardProps) => {
+  const navigate = useNavigate();
 
   return (
-    <Card className={classes.root}>
-      <CardActionArea>
-        <CardMedia
-          className={classes.media}
-          image={Spotify}
-          //to edit
-          title="Contemplative Reptile"
-        />
+    <Card sx={{ height: "100%", cursor: "pointer" }} onClick={() => navigate(route)}>
+      <CardActionArea sx={{ height: "100%" }}>
+        <Box
+          sx={{
+            height: 140,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            bgcolor: "rgba(46, 188, 88, 0.12)",
+          }}
+        >
+          <Icon sx={{ fontSize: 72, color: "#2ebc58" }} />
+        </Box>
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
             {title}
           </Typography>
-          <Typography variant="body2" color="textPrimary" component="p">
+          <Typography variant="body2" color="text.primary" component="p">
             {text}
           </Typography>
         </CardContent>

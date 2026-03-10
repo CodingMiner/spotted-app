@@ -4,19 +4,32 @@
 
 .Welcome-logo {
   pointer-events: none;
-  width: 10;
-  height: 10;
+  width: 200px;
+  height: 200px;
+  animation: Welcome-logo-float infinite 2s ease-in-out;
+  animation-delay: 4s;
 }
 
 .Welcome-text {
   color: white;
   font-family: "Dosis";
+  position: relative;
+  opacity: 0;
+  bottom: -1em;
+  animation: welcome-move-text 1.5s forwards;
 }
 
 .Welcome-description {
   color: white;
   margin-top: 40px;
   font-family: "Dosis";
+  font-size: 1.25rem;
+  font-weight: 400;
+  animation: welcome-move-description 1.5s forwards;
+  animation-delay: 2s;
+  position: relative;
+  opacity: 0;
+  bottom: -1em;
 }
 
 .Welcome-header {
@@ -25,26 +38,6 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-}
-
-h1 {
-  position: relative;
-  opacity: 0;
-  bottom: -1em;
-  animation: welcome-move-text 1.5s forwards;
-}
-
-h3 {
-  position: relative;
-  opacity: 0;
-  bottom: -1em;
-  animation: welcome-move-description 1.5s forwards;
-  animation-delay: 2s;
-}
-
-.Welcome-logo {
-  animation: Welcome-logo-float infinite 2s ease-in-out;
-  animation-delay: 4s;
 }
 
 @keyframes Welcome-logo-float {

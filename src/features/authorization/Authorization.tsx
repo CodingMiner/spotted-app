@@ -1,51 +1,47 @@
-import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import {
-  setLoggedIn,
-  setAccessToken,
-  setTokenExpiryDate,
-} from "./authorizationSlice";
-import { setUserProfileAsync } from "../spotifyExample/spotifyEampleSlice";
+import { useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import { exchangeCode, selectIsLoggedIn } from "./authorizationSlice";
 import { getAuthorizeHref } from "./oauthConfig";
-import { getHashParams, removeHashParamsFromUrl } from "../../utils/hashUtils";
 import { AuthorizationButton } from "../../components/Button";
-import * as styles from "../../styles/AuthorizationStyles";
+import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
+import { PATH_ROUTES } from "../../routes/Routes";
 
-const hashParams = getHashParams();
-const access_token = hashParams.access_token;
-const expires_in = hashParams.expires_in;
-removeHashParamsFromUrl();
-
-const Authorization: React.FC = () => {
-  const dispatch = useDispatch();
-
-  const handleAuthorizationButton = () => {
-    window.open(getAuthorizeHref(), "_self");
-  };
+const Authorization = () => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
+  const [searchParams] = useSearchParams();
+  const code = searchParams.get("code");
 
   useEffect(() => {
-    if (access_token) {
-      dispatch(setLoggedIn(true));
-      dispatch(setAccessToken(access_token));
-      dispatch(setTokenExpiryDate(Number(expires_in)));
-      dispatch(setUserProfileAsync(access_token));
+    if (code && !isLoggedIn) {
+      dispatch(exchangeCode(code)).then(() => {
+        navigate(PATH_ROUTES.MAIN_PAGE);
+      });
     }
-  }, []);
+  }, [code, isLoggedIn, dispatch, navigate]);
+
+  const handleAuthorizationButton = async () => {
+    const href = await getAuthorizeHref();
+    window.location.href = href;
+  };
+
+  if (code && !isLoggedIn) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+        <CircularProgress color="primary" />
+      </Box>
+    );
+  }
 
   return (
-    <div style={styles.body}>
-      <div style={styles.row}>
-        {!access_token && (
-          <AuthorizationButton
-            variant="contained"
-            color="primary"
-            onClick={handleAuthorizationButton}
-          >
-            Log in to Spotify
-          </AuthorizationButton>
-        )}
-      </div>
-    </div>
+    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", mt: "50px" }}>
+      <AuthorizationButton variant="contained" color="primary" onClick={handleAuthorizationButton}>
+        Log in to Spotify
+      </AuthorizationButton>
+    </Box>
   );
 };
 

@@ -37,7 +37,7 @@ jobs:
         run: yarn build
         env:
           VITE_SPOTIFY_CLIENT_ID: ${{ secrets.VITE_SPOTIFY_CLIENT_ID }}
-          VITE_REDIRECT_URI: https://codingminer.github.io/spotted-app/
+          VITE_REDIRECT_URI: https://codingminer.github.io/spotted-app
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

@@ -1,12 +1,8 @@
-import {
-  configureStore,
-  getDefaultMiddleware,
-  ThunkAction,
-  Action,
-} from "@reduxjs/toolkit";
+import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import { combineReducers } from "redux";
 import authorizationReducer from "./features/authorization/authorizationSlice";
-import spotifyExampleReducer from "./features/spotifyExample/spotifyEampleSlice";
+import spotifyExampleReducer from "./features/spotifyExample/spotifyExampleSlice";
+import { spotifyApi } from "./services/spotifyApi";
 import {
   persistStore,
   persistReducer,
@@ -23,27 +19,30 @@ const persistConfig = {
   key: "root",
   version: 1,
   storage,
-  // whitelist: [],
+  blacklist: [spotifyApi.reducerPath],
 };
 
 const reducers = combineReducers({
   authorization: authorizationReducer,
   spotifyExample: spotifyExampleReducer,
+  [spotifyApi.reducerPath]: spotifyApi.reducer,
 });
 
-const presistedReducer = persistReducer(persistConfig, reducers);
+const persistedReducer = persistReducer(persistConfig, reducers);
 
 export const store = configureStore({
-  reducer: presistedReducer,
-  middleware: getDefaultMiddleware({
-    serializableCheck: {
-      ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-    },
-  }),
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }).concat(spotifyApi.middleware),
 });
 
 export const persistor = persistStore(store);
 
+export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;
 
 export type AppThunk<ReturnType = void> = ThunkAction<

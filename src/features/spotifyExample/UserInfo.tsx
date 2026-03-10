@@ -1,27 +1,25 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { selectDisplayName, selectProduct } from "./spotifyEampleSlice";
-import {
-  ConatinerStyle,
-  LoginStyle,
-  SubscriptionStyle,
-} from "../../styles/UserInfoStyles";
+import { useAppSelector } from "../../hooks";
+import { selectDisplayName, selectProduct } from "../authorization/authorizationSlice";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 
-const UserInfo: React.FC = () => {
-  const displayName = useSelector(selectDisplayName);
-  const product = useSelector(selectProduct);
+const UserInfo = () => {
+  const displayName = useAppSelector(selectDisplayName);
+  const product = useAppSelector(selectProduct);
 
   return (
-    <div style={ConatinerStyle}>
+    <Box sx={{ color: "white" }}>
       {displayName && (
-        <div style={LoginStyle}>
+        <Typography sx={{ mt: "20px", fontSize: "17px", fontFamily: "Dosis" }}>
           You are currently logged in as {displayName}
-        </div>
+        </Typography>
       )}
       {product && (
-        <div style={SubscriptionStyle}>Your subscription type is {product}</div>
+        <Typography sx={{ mt: "10px", fontSize: "17px", fontFamily: "Dosis" }}>
+          Your subscription type is {product}
+        </Typography>
       )}
-    </div>
+    </Box>
   );
 };
 
